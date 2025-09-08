@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment - ₹{{ amount_in_rupees }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4 text-center">
+                    <i class="fas fa-credit-card fa-4x text-primary mb-3"></i>
+                    <h3 class="fw-bold mb-3">Complete Your Payment</h3>
+                    <p class="text-muted mb-4">Pay ₹{{ amount_in_rupees }} to generate your QR code</p>
+                    
+                    <div class="bg-light rounded p-3 mb-4">
+                        <div class="row">
+                            <div class="col-6 text-start">
+                                <strong>{{ record.name }}</strong><br>
+                                <small class="text-muted">{{ record.contact_no }}</small>
+                            </div>
+                            <div class="col-6 text-end">
+                                <strong>₹{{ amount_in_rupees }}</strong><br>
+                                <small class="text-muted">{{ payment_info.title }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="payButton" class="btn btn-success btn-lg px-5">
+                        <i class="fas fa-lock me-2"></i>Pay ₹{{ amount_in_rupees }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+const orderData = JSON.parse('{{ razorpay_order|escapejs }}');
+
+const options = {
+    key: '{{ razorpay_key }}',
+    amount: orderData.amount,
+    currency: orderData.currency,
+    name: 'RTO Management',
+    description: '{{ payment_info.description }}',
+    order_id: orderData.id,
+    handler: function(response) {
+        // Show loading state
+        document.getElementById('payButton').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+        document.getElementById('payButton').disabled = true;
+        
+        // Verify payment and generate QR
+        fetch('{% url "core:verify_payment" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to QR success page
+                window.location.href = data.redirect_url;
+            } else {
+                alert('Payment verification failed: ' + data.error);
+                // Reset button
+                document.getElementById('payButton').innerHTML = '<i class="fas fa-lock me-2"></i>Pay ₹{{ amount_in_rupees }}';
+                document.getElementById('payButton').disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during payment verification');
+            // Reset button
+            document.getElementById('payButton').innerHTML = '<i class="fas fa-lock me-2"></i>Pay ₹{{ amount_in_rupees }}';
+            document.getElementById('payButton').disabled = false;
+        });
+    },
+    prefill: {
+        name: '{{ record.name }}',
+        contact: '{{ record.contact_no }}'
+    },
+    theme: {
+        color: '#28a745'
+    },
+    modal: {
+        ondismiss: function() {
+            // Reset button if payment modal is closed
+            document.getElementById('payButton').innerHTML = '<i class="fas fa-lock me-2"></i>Pay ₹{{ amount_in_rupees }}';
+            document.getElementById('payButton').disabled = false;
+        }
+    }
+};
+
+document.getElementById('payButton').onclick = function() {
+    const rzp = new Razorpay(options);
+    rzp.open();
+};
+</script>
+{% endblock %}

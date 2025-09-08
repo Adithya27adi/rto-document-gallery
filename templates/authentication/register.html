@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - RTO Record Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <!-- Left Side - Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center p-4">
+            <div class="w-100" style="max-width: 500px;">
+                <div class="text-center mb-5">
+                    <i class="fas fa-user-plus text-primary fa-3x mb-3"></i>
+                    <h2 class="fw-bold">Create Account</h2>
+                    <p class="text-muted">Join thousands managing RTO documents digitally</p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data" id="registerForm">
+                    {% csrf_token %}
+                    
+                    <!-- ADD ERROR DISPLAY HERE -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                            {% for field, errors in form.errors.items %}
+                                {% for error in errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- CRITICAL: Hidden field for redirect after registration -->
+                    <input type="hidden" name="next" value="/dashboard/" />
+                    
+                    <!-- Profile Picture Upload -->
+                    <div class="text-center mb-4">
+                        <div class="profile-upload-container">
+                            <div class="profile-preview bg-light rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px; cursor: pointer;" onclick="document.getElementById('profilePicture').click()">
+                                <i class="fas fa-camera text-muted fa-2x" id="cameraIcon"></i>
+                                <img id="profilePreview" class="rounded-circle d-none" style="width: 100px; height: 100px; object-fit: cover;">
+                            </div>
+                            <input type="file" id="profilePicture" name="profile_picture" accept="image/*" class="d-none">
+                            <p class="text-muted small mt-2">Click to upload profile picture</p>
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control form-control-lg" name="full_name" placeholder="Enter your full name" required>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email Address *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control form-control-lg" name="email" placeholder="Enter your email" required>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone Number *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control form-control-lg" name="phone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+
+                    <!-- State Dropdown -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">State *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <select class="form-select form-select-lg" name="state" required>
+                                <option value="">Select Your State</option>
+                                <option value="andhra-pradesh">Andhra Pradesh</option>
+                                <option value="arunachal-pradesh">Arunachal Pradesh</option>
+                                <option value="assam">Assam</option>
+                                <option value="bihar">Bihar</option>
+                                <option value="chhattisgarh">Chhattisgarh</option>
+                                <option value="goa">Goa</option>
+                                <option value="gujarat">Gujarat</option>
+                                <option value="haryana">Haryana</option>
+                                <option value="himachal-pradesh">Himachal Pradesh</option>
+                                <option value="jharkhand">Jharkhand</option>
+                                <option value="karnataka">Karnataka</option>
+                                <option value="kerala">Kerala</option>
+                                <option value="madhya-pradesh">Madhya Pradesh</option>
+                                <option value="maharashtra">Maharashtra</option>
+                                <option value="manipur">Manipur</option>
+                                <option value="meghalaya">Meghalaya</option>
+                                <option value="mizoram">Mizoram</option>
+                                <option value="nagaland">Nagaland</option>
+                                <option value="odisha">Odisha</option>
+                                <option value="punjab">Punjab</option>
+                                <option value="rajasthan">Rajasthan</option>
+                                <option value="sikkim">Sikkim</option>
+                                <option value="tamil-nadu">Tamil Nadu</option>
+                                <option value="telangana">Telangana</option>
+                                <option value="tripura">Tripura</option>
+                                <option value="uttar-pradesh">Uttar Pradesh</option>
+                                <option value="uttarakhand">Uttarakhand</option>
+                                <option value="west-bengal">West Bengal</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="chandigarh">Chandigarh</option>
+                                <option value="puducherry">Puducherry</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Address *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-home"></i></span>
+                            <textarea class="form-control" name="address" rows="3" placeholder="Enter your complete address" required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control form-control-lg" name="password1" placeholder="Create strong password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password1')">
+                                <i class="fas fa-eye" id="password1-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Confirm Password *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control form-control-lg" name="password2" placeholder="Confirm your password" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password2')">
+                                <i class="fas fa-eye" id="password2-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label small" for="terms">
+                                I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" id="submitBtn">
+                        <i class="fas fa-user-plus me-2"></i>Create Account
+                    </button>
+
+                    <!-- Login Link -->
+                    <div class="text-center">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{% url 'authentication:login' %}" class="text-primary fw-semibold">Login here</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Side - Visual -->
+        <div class="col-lg-6 gradient-bg d-none d-lg-flex align-items-center justify-content-center text-white">
+            <div class="text-center">
+                <i class="fas fa-shield-alt fa-5x mb-4"></i>
+                <h3 class="fw-bold mb-4">Secure & Reliable</h3>
+                <p class="lead">Your documents are encrypted and stored securely. Access them anywhere with QR codes.</p>
+                <div class="row mt-5">
+                    <div class="col-4 text-center">
+                        <i class="fas fa-users fa-2x mb-2"></i>
+                        <p class="small">10,000+ Users</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="fas fa-file-alt fa-2x mb-2"></i>
+                        <p class="small">50,000+ Documents</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <i class="fas fa-star fa-2x mb-2"></i>
+                        <p class="small">4.8/5 Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Profile picture preview
+    document.getElementById('profilePicture').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profilePreview').src = e.target.result;
+                document.getElementById('profilePreview').classList.remove('d-none');
+                document.getElementById('cameraIcon').classList.add('d-none');
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Toggle password visibility
+    function togglePassword(inputName) {
+        const input = document.querySelector(`input[name="${inputName}"]`);
+        const icon = document.getElementById(`${inputName}-icon`);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Form validation
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const password1 = document.querySelector('input[name="password1"]').value;
+        const password2 = document.querySelector('input[name="password2"]').value;
+        
+        if (password1 !== password2) {
+            e.preventDefault();
+            alert('Passwords do not match!');
+            return;
+        }
+        
+        // Show loading state
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Account...';
+        submitBtn.disabled = true;
+    });
+</script>
+
+<style>
+    .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .profile-upload-container:hover .profile-preview {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}

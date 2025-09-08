@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome - RTO System{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="text-4xl font-bold mb-6">Welcome to RTO Record Management System</h1>
+    <p class="text-lg mb-8">Secure management of RTO records and documentation</p>
+    
+    <div class="space-x-4">
+        <a href="/auth/login/" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+            Login
+        </a>
+        <a href="/auth/register/" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700">
+            Register
+        </a>
+    </div>
+</div>
+{% endblock %}

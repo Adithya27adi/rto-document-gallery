@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Download QR Code - RTO Management{% endblock %}
+
+{% block content %}
+<div class="container py-4 text-center">
+    <h2>Your QR Code</h2>
+    {% if record.qr_code_image %}
+        <img src="{{ record.qr_code_image.url }}" alt="QR Code" class="img-fluid" style="max-width: 300px; margin: 20px auto;">
+        <p>
+            <a href="{{ record.qr_code_image.url }}" download="qr_code_{{ record.id }}.png" class="btn btn-primary">
+                Download QR Code
+            </a>
+        </p>
+    {% else %}
+        <p class="text-danger">QR code not generated yet.</p>
+        <a href="{% url 'core:generate_qr' record_id=record.id %}" class="btn btn-success">Generate QR Code</a>
+    {% endif %}
+    <p>
+        <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </p>
+</div>
+{% endblock %}

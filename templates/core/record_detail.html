@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ record.name }} - Record Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Record Information -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fas fa-file-alt text-primary me-2"></i>Record Details
+                        </h5>
+                        <span class="badge bg-{% if record.status == 'approved' %}success{% elif record.status == 'pending' %}warning{% elif record.status == 'rejected' %}danger{% else %}info{% endif %} fs-6">
+                            {{ record.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Name</h6>
+                            <p class="fw-semibold">{{ record.name }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Contact Number</h6>
+                            <p class="fw-semibold">{{ record.contact_no }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Record Type</h6>
+                            <p class="fw-semibold">{{ record.get_record_type_display }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Created Date</h6>
+                            <p class="fw-semibold">{{ record.created_at|date:"F d, Y" }}</p>
+                        </div>
+                        <div class="col-12">
+                            <h6 class="text-muted">Address</h6>
+                            <p class="fw-semibold">{{ record.address }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Documents -->
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-folder-open text-success me-2"></i>Uploaded Documents
+                    </h6>
+                    <div class="row g-3">
+                        {% if record.rc_photo %}
+                        <div class="col-md-6">
+                            <div class="card border">
+                                <img src="{{ record.rc_photo.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <div class="card-body text-center py-2">
+                                    <small class="text-muted">RC Photo</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.insurance_doc %}
+                        <div class="col-md-6">
+                            <div class="card border">
+                                {% if record.insurance_doc.url|slice:"-4:" == ".pdf" %}
+                                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                        <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                    </div>
+                                {% else %}
+                                    <img src="{{ record.insurance_doc.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body text-center py-2">
+                                    <small class="text-muted">Insurance Document</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.pu_check_doc %}
+                        <div class="col-md-6">
+                            <div class="card border">
+                                {% if record.pu_check_doc.url|slice:"-4:" == ".pdf" %}
+                                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                        <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                    </div>
+                                {% else %}
+                                    <img src="{{ record.pu_check_doc.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body text-center py-2">
+                                    <small class="text-muted">PU Check Document</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if record.driving_license_doc %}
+                        <div class="col-md-6">
+                            <div class="card border">
+                                {% if record.driving_license_doc.url|slice:"-4:" == ".pdf" %}
+                                    <div class="card-img-top d-flex align-items-center justify-content-center bg-light" style="height: 200px;">
+                                        <i class="fas fa-file-pdf fa-4x text-danger"></i>
+                                    </div>
+                                {% else %}
+                                    <img src="{{ record.driving_license_doc.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body text-center py-2">
+                                    <small class="text-muted">Driving License</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if not record.has_documents %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-folder-open text-muted fa-3x mb-3"></i>
+                        <h6 class="text-muted">No documents uploaded yet</h6>
+                        <p class="text-muted">Upload at least one document to generate QR code</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions Panel -->
+        <div class="col-lg-4">
+            <!-- QR Code Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fas fa-qrcode text-success me-2"></i>QR Code
+                    </h6>
+                </div>
+                <div class="card-body text-center">
+                    {% if record.qr_code_image %}
+                        <img src="{{ record.qr_code_image.url }}" alt="QR Code" class="img-fluid mb-3" style="max-width: 200px;">
+                        <p class="text-success small mb-3">
+                            <i class="fas fa-check-circle me-1"></i>QR Code Generated
+                        </p>
+                    {% else %}
+                        <div class="bg-light rounded p-4 mb-3">
+                            <i class="fas fa-qrcode fa-4x text-muted"></i>
+                        </div>
+                        {% if can_generate_qr %}
+                            <button class="btn btn-success btn-sm mb-3" onclick="generateQR('{{ record.id }}')">
+                                <i class="fas fa-magic me-1"></i>Generate QR Code
+                            </button>
+                        {% else %}
+                            <p class="text-muted small mb-3">Upload documents to generate QR code</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Order Options -->
+            {% if record.qr_code_image %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fas fa-shopping-cart text-primary me-2"></i>Order Options
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'core:payment' record.id 'qr_download' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-download me-2"></i>Download QR PDF
+                            <span class="float-end fw-bold">₹2</span>
+                        </a>
+                        <a href="{% url 'core:payment' record.id 'pvc_card' %}" class="btn btn-outline-success">
+                            <i class="fas fa-credit-card me-2"></i>Order PVC Card
+                            <span class="float-end fw-bold">₹100</span>
+                        </a>
+                        <a href="{% url 'core:payment' record.id 'nfc_card' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-wifi me-2"></i>Order NFC Card
+                            <span class="float-end fw-bold">₹400</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Orders History -->
+            {% if orders %}
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fas fa-history text-info me-2"></i>Order History
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% for order in orders %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <small class="fw-semibold">{{ order.get_order_type_display }}</small>
+                            <br>
+                            <small class="text-muted">{{ order.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <div class="text-end">
+                            <div class="fw-bold">₹{{ order.total_amount }}</div>
+                            <span class="badge bg-{% if order.payment_status == 'completed' %}success{% elif order.payment_status == 'pending' %}warning{% else %}secondary{% endif %} small">
+                                {{ order.get_payment_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                    {% if not forloop.last %}<hr class="my-2">{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row">
+        <div class="col-12">
+            <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function generateQR(recordId) {
+        fetch(`/records/${recordId}/generate-qr/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Failed to generate QR code: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while generating QR code');
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}QR Code Generated - {{ record.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Success Message -->
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h2 class="fw-bold text-success">Payment Successful!</h2>
+                <p class="text-muted">Your QR code has been generated successfully.</p>
+            </div>
+
+            <!-- QR Code Display -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-body text-center p-5">
+                    <h4 class="fw-bold mb-4">📱 Your QR Code</h4>
+                    
+                    {% if record.qr_code_image %}
+                        <div class="mb-4">
+                            <img src="{{ record.qr_code_image.url }}" 
+                                 alt="QR Code for {{ record.name }}" 
+                                 class="img-fluid border rounded" 
+                                 style="max-width: 300px;">
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>How to use:</strong> Scan this QR code to view all your uploaded documents
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{{ record.qr_code_image.url }}" 
+                               class="btn btn-primary btn-lg" 
+                               download="qr_code_{{ record.name|slugify }}.png">
+                                <i class="fas fa-download me-2"></i>Download QR Code
+                            </a>
+                            {% if record.gallery_html_url %}
+                                <a href="{{ record.gallery_html_url }}" 
+                                   class="btn btn-success btn-lg" 
+                                   target="_blank">
+                                    <i class="fas fa-external-link-alt me-2"></i>View Documents
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            QR code is being generated. Please refresh the page in a moment.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Record Details -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">📋 Record Details</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> {{ record.name }}</p>
+                            <p><strong>Contact:</strong> {{ record.contact_no }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Type:</strong> {{ record.get_record_type_display }}</p>
+                            <p><strong>Documents:</strong> {{ record.cloudinary_urls|length }} file{{ record.cloudinary_urls|length|pluralize }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center mt-4">
+                <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
+                <a href="{% url 'core:create_record' 'rto' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i>Create Another Record
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - RTO Record Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white border-0 shadow-lg">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="fw-bold mb-2">Welcome back, {{ user.first_name|default:user.email }}!</h2>
+                            <p class="mb-0 opacity-75">Manage your RTO documents securely and efficiently</p>
+                        </div>
+                        <div class="col-md-4 text-end d-none d-md-block">
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-1"></i>Account
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="{% url 'authentication:profile' %}">
+                                        <i class="fas fa-user me-2"></i>Profile</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'core:orders' %}">
+                                        <i class="fas fa-shopping-cart me-2"></i>Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <!-- ONLY USE THIS LOGOUT CODE -->
+                                    <li>
+                                    <form method="post" action="{% url 'authentication:logout' %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-link dropdown-item border-0 bg-transparent text-start w-100 text-decoration-none">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </button>
+                                    </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-file-alt text-primary fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold">{{ stats.total_records }}</h3>
+                    <p class="text-muted mb-0">Total Records</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold">{{ stats.approved_records }}</h3>
+                    <p class="text-muted mb-0">Approved</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-clock text-warning fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold">{{ stats.pending_records }}</h3>
+                    <p class="text-muted mb-0">Pending</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body text-center">
+                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                        <i class="fas fa-shopping-cart text-info fa-2x"></i>
+                    </div>
+                    <h3 class="fw-bold">{{ stats.total_orders }}</h3>
+                    <p class="text-muted mb-0">Orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0">Create New Record</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a href="{% url 'core:create_record' 'rto' %}" class="card border-2 border-primary border-opacity-25 text-decoration-none quick-action-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="fas fa-car text-primary fa-3x mb-3"></i>
+                                    <h6 class="fw-bold">RTO Record</h6>
+                                    <p class="text-muted small mb-0">RC, Insurance, PU Check, Driving License</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'core:create_record' 'school' %}" class="card border-2 border-success border-opacity-25 text-decoration-none quick-action-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="fas fa-graduation-cap text-success fa-3x mb-3"></i>
+                                    <h6 class="fw-bold">School Record</h6>
+                                    <p class="text-muted small mb-0">Marks Card, Photo, Convocation, Migration</p>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'core:create_record' 'other' %}" class="card border-2 border-warning border-opacity-25 text-decoration-none quick-action-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="fas fa-folder text-warning fa-3x mb-3"></i>
+                                    <h6 class="fw-bold">Other Documents</h6>
+                                    <p class="text-muted small mb-0">Custom document name and upload</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Records and Orders -->
+    <div class="row">
+        <!-- Recent Records -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Your Records</h5>
+                    <a href="{% url 'core:create_record' 'rto' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i>New Record
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    {% if user_records %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Documents</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in user_records %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                    <i class="fas fa-user text-primary"></i>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">{{ record.name }}</h6>
+                                                    <small class="text-muted">{{ record.contact_no }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ record.get_record_type_display }}</span>
+                                        </td>
+                                        <td>
+                                            {% if record.status == 'approved' %}
+                                                <span class="badge bg-success">{{ record.get_status_display }}</span>
+                                            {% elif record.status == 'pending' %}
+                                                <span class="badge bg-warning">{{ record.get_status_display }}</span>
+                                            {% elif record.status == 'rejected' %}
+                                                <span class="badge bg-danger">{{ record.get_status_display }}</span>
+                                            {% else %}
+                                                <span class="badge bg-info">{{ record.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">{{ record.get_document_count }} uploaded</span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">{{ record.created_at|date:"M d, Y" }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'core:record_detail' record.id %}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                {% if record.qr_code_image %}
+                                                    <button class="btn btn-outline-success btn-sm" title="QR Generated">
+                                                        <i class="fas fa-qrcode"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-file-plus text-muted fa-3x mb-3"></i>
+                            <h6 class="text-muted">No records yet</h6>
+                            <p class="text-muted">Create your first RTO record to get started</p>
+                            <a href="{% url 'core:create_record' 'rto' %}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Create First Record
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">Recent Orders</h5>
+                    <a href="{% url 'core:orders' %}" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_orders %}
+                        {% for order in recent_orders %}
+                        <div class="d-flex align-items-center p-3 border-bottom">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                {% if order.order_type == 'qr_download' %}
+                                    <i class="fas fa-download text-primary"></i>
+                                {% elif order.order_type == 'pvc_card' %}
+                                    <i class="fas fa-credit-card text-primary"></i>
+                                {% else %}
+                                    <i class="fas fa-wifi text-primary"></i>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">{{ order.get_order_type_display }}</h6>
+                                <small class="text-muted">₹{{ order.total_amount }} • {{ order.created_at|date:"M d" }}</small>
+                            </div>
+                            <span class="badge bg-{% if order.payment_status == 'completed' %}success{% elif order.payment_status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                {{ order.get_payment_status_display }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-shopping-cart text-muted fa-2x mb-2"></i>
+                            <p class="text-muted mb-0">No orders yet</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .quick-action-card {
+        transition: all 0.3s ease;
+    }
+    
+    .quick-action-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(102, 126, 234, 0.05);
+    }
+</style>
+
+<script>
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate cards on load
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        });
+    });
+</script>
+{% endblock %}
