@@ -4,6 +4,7 @@ import hashlib
 import json
 import qrcode
 import os
+import subprocess
 from io import BytesIO
 from urllib.parse import urljoin
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,18 +16,22 @@ from django.conf import settings
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.core.files import File
+from django.template.loader import render_to_string
 
 from .models import RTORecord, Order
 from .forms import RTORecordForm, SchoolRecordForm, OrderForm
 
+
 def landing_view(request):
     return render(request, 'landing.html')
+
 
 def home_view(request):
     """Home page view - redirects to dashboard if authenticated, otherwise to landing"""
     if request.user.is_authenticated:
         return redirect('core:dashboard')
     return redirect('core:landing')
+
 
 @login_required
 def dashboard_view(request):
@@ -49,6 +54,7 @@ def dashboard_view(request):
         'stats': stats,
     })
 
+
 @csrf_exempt
 @login_required
 def ajax_create_record(request):
@@ -69,7 +75,7 @@ def ajax_create_record(request):
     if not all([name, contact_no, address, record_type]) or not cloudinary_urls:
         return JsonResponse({"error": "Missing required fields"}, status=400)
 
-    # Create record with Cloudinary URLs only (no file storage)
+    # Create record with Cloudinary URLs
     record = RTORecord.objects.create(
         owner=request.user,
         record_type=record_type,
@@ -116,6 +122,7 @@ def ajax_create_record(request):
     payment_url = reverse('core:payment', kwargs={'record_id': record.id, 'order_type': 'qr_download'})
     return JsonResponse({'payment_url': payment_url})
 
+
 @login_required
 def create_record_view(request, record_type):
     if record_type == 'school':
@@ -139,6 +146,7 @@ def create_record_view(request, record_type):
 
     return render(request, 'core/create_record.html', {'form': form, 'record_type': record_type})
 
+
 @login_required
 def edit_record_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
@@ -158,11 +166,13 @@ def edit_record_view(request, record_id):
 
     return render(request, 'edit_record.html', {'form': form, 'record': record})
 
+
 @login_required
 def record_detail_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
     orders = Order.objects.filter(rto_record=record)
     return render(request, 'record_detail.html', {'record': record, 'orders': orders})
+
 
 @login_required
 def payment_view(request, record_id, order_type):
@@ -208,6 +218,233 @@ def payment_view(request, record_id, order_type):
 
     return render(request, 'core/payment.html', context)
 
+
+def get_cloudinary_urls(record):
+    """Extract all Cloudinary URLs from a record"""
+    urls = []
+    
+    print(f"🔍 DEBUG: Checking record {record.id} of type '{record.record_type}'")
+    
+    if record.record_type == "rto":
+        print("📋 Checking RTO documents:")
+        if record.rc_photo: 
+            urls.append(record.rc_photo)
+            print(f"✅ RC Photo: {record.rc_photo}")
+        else:
+            print("❌ RC Photo: EMPTY")
+            
+        if record.insurance_doc: 
+            urls.append(record.insurance_doc)
+            print(f"✅ Insurance Doc: {record.insurance_doc}")
+        else:
+            print("❌ Insurance Doc: EMPTY")
+            
+        if record.pu_check_doc: 
+            urls.append(record.pu_check_doc)
+            print(f"✅ PU Check Doc: {record.pu_check_doc}")
+        else:
+            print("❌ PU Check Doc: EMPTY")
+            
+        if record.driving_license_doc: 
+            urls.append(record.driving_license_doc)
+            print(f"✅ Driving License Doc: {record.driving_license_doc}")
+        else:
+            print("❌ Driving License Doc: EMPTY")
+            
+    elif record.record_type == "school":
+        print("🎓 Checking School documents:")
+        if record.marks_card: 
+            urls.append(record.marks_card)
+            print(f"✅ Marks Card: {record.marks_card}")
+        else:
+            print("❌ Marks Card: EMPTY")
+            
+        if record.photo: 
+            urls.append(record.photo)
+            print(f"✅ Photo: {record.photo}")
+        else:
+            print("❌ Photo: EMPTY")
+            
+        if record.convocation: 
+            urls.append(record.convocation)
+            print(f"✅ Convocation: {record.convocation}")
+        else:
+            print("❌ Convocation: EMPTY")
+            
+        if record.migration: 
+            urls.append(record.migration)
+            print(f"✅ Migration: {record.migration}")
+        else:
+            print("❌ Migration: EMPTY")
+    
+    print(f"📊 TOTAL DOCUMENTS FOUND: {len(urls)}")
+    return urls
+
+
+
+def generate_static_html(record):
+    """Generate static HTML file for the record using Django template"""
+    # Get Cloudinary URLs for this record
+    cloudinary_urls = get_cloudinary_urls(record)
+    
+    print(f"Found {len(cloudinary_urls)} documents for record {record.id}")
+    for url in cloudinary_urls:
+        print(f"Document URL: {url}")
+    
+    # Create context for template
+    context = {
+        'record': record,
+        'cloudinary_urls': cloudinary_urls,
+    }
+    
+    # Try to render using Django template first
+    try:
+        html_content = render_to_string('document_gallery.html', context)
+    except Exception as e:
+        print(f"Template error: {e}")
+        # Fallback to inline HTML generation if template doesn't exist
+        html_content = generate_inline_html(record, cloudinary_urls)
+    
+    # Create folder structure for Netlify
+    folder_path = f'netlify_uploads/record_{record.id}'
+    os.makedirs(folder_path, exist_ok=True)
+    
+    # Write HTML file
+    with open(os.path.join(folder_path, 'index.html'), 'w', encoding='utf-8') as f:
+        f.write(html_content)
+    
+    # Create _redirects file at root level if it doesn't exist
+    redirects_path = 'netlify_uploads/_redirects'
+    os.makedirs('netlify_uploads', exist_ok=True)
+    if not os.path.exists(redirects_path):
+        with open(redirects_path, 'w') as f:
+            f.write('/* /index.html 200\n')
+    
+    print(f"Generated HTML for record: {record.id}")
+
+
+def generate_inline_html(record, cloudinary_urls):
+    """Generate HTML content inline if template is not available"""
+    docs_html = ""
+    for i, url in enumerate(cloudinary_urls):
+        download_url = url.replace('/upload/', '/upload/fl_attachment/')
+        docs_html += f"""
+        <div class="doc-card">
+            <img src="{url}" alt="Document {i+1}" class="doc-image" loading="lazy">
+            <div class="doc-info">
+                <h3>Document {i+1}</h3>
+                <div class="btn-group">
+                    <a href="{url}" class="btn btn-view" target="_blank">👁️ View</a>
+                    <a href="{download_url}" class="btn btn-download" target="_blank">⬇️ Download</a>
+                </div>
+            </div>
+        </div>
+        """
+    
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Documents for {record.name}</title>
+        <style>
+            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+            .container {{ max-width: 1200px; margin: 0 auto; }}
+            .header {{ text-align: center; margin-bottom: 40px; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }}
+            .header h1 {{ color: #333; margin-bottom: 10px; font-size: 2.5em; }}
+            .header p {{ color: #666; font-size: 1.1em; }}
+            .gallery {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }}
+            .doc-card {{ background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease; }}
+            .doc-card:hover {{ transform: translateY(-5px); }}
+            .doc-image {{ width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid #eee; }}
+            .doc-info {{ padding: 20px; text-align: center; }}
+            .doc-info h3 {{ margin: 0 0 15px 0; color: #333; font-size: 1.2em; }}
+            .btn-group {{ display: flex; gap: 10px; justify-content: center; }}
+            .btn {{ padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }}
+            .btn-view {{ background: #667eea; color: white; }}
+            .btn-view:hover {{ background: #5a67d8; }}
+            .btn-download {{ background: #48bb78; color: white; }}
+            .btn-download:hover {{ background: #38a169; }}
+            .footer {{ text-align: center; margin-top: 40px; color: rgba(255,255,255,0.8); }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>📄 Documents for {record.name}</h1>
+                <p><strong>📞 Contact:</strong> {record.contact_no}</p>
+                <p><strong>🏷️ Type:</strong> {record.get_record_type_display()}</p>
+                <p><strong>📅 Created:</strong> {record.created_at.strftime('%B %d, %Y')}</p>
+            </div>
+            
+            <div class="gallery">
+                {docs_html}
+            </div>
+            
+            <div class="footer">
+                <p>Generated by RTO Management System | Secure Document Storage</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return html_content
+
+
+def auto_deploy_to_github(record):
+    """Automatically commit and push to GitHub"""
+    try:
+        # Change to project directory
+        os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        
+        # Add new files
+        subprocess.run(['git', 'add', 'netlify_uploads/'], check=True)
+        
+        # Check if there are changes to commit
+        result = subprocess.run(['git', 'diff', '--staged', '--quiet'], capture_output=True)
+        if result.returncode == 0:
+            print(f"No changes to commit for record {record.id}")
+            return
+        
+        # Commit changes
+        commit_message = f"Add document gallery for record {record.id}"
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        
+        # Push to GitHub
+        subprocess.run(['git', 'push', 'origin', 'main'], check=True)
+        
+        print(f"Successfully deployed record {record.id} to GitHub")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Error deploying to GitHub: {e}")
+    except Exception as e:
+        print(f"Unexpected error during GitHub deployment: {e}")
+
+
+def generate_qr_code_for_record(record, url):
+    """Generate QR code pointing to the gallery URL"""
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    
+    # Create QR image
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Save to model
+    blob = BytesIO()
+    img.save(blob, 'PNG')
+    blob.seek(0)
+    
+    record.qr_code_image.save(f'qr_{record.id}.png', File(blob), save=False)
+    record.save()
+
+
 @csrf_exempt
 @login_required
 def verify_payment(request):
@@ -243,221 +480,98 @@ def verify_payment(request):
     
     record = order.rto_record
     
-    # Generate HTML gallery page
-    gallery_html = generate_gallery_html(record)
+    # Generate static HTML file
+    generate_static_html(record)
     
-    # Save HTML file with proper folder structure
-    folder_name = save_html_file(record, gallery_html)
+    # Auto-commit and push to GitHub
+    auto_deploy_to_github(record)
     
-    # Generate QR code pointing to folder path (not file path)
-    netlify_url = f"https://shiny-yeot-9e86c3.netlify.app/{folder_name}/"
+    # Generate QR code with Netlify URL
+    # In your verify_payment view, change this line:
+    netlify_url = f"https://YOUR-ACTUAL-NETLIFY-DOMAIN.netlify.app/record_{record.id}/"
     generate_qr_code_for_record(record, netlify_url)
     
-    # Store gallery URL in record
     record.gallery_html_url = netlify_url
     record.save()
     
-
     redirect_url = reverse('core:qr_success', kwargs={'record_id': record.id})
     return JsonResponse({'success': True, 'redirect_url': redirect_url})
 
-def generate_gallery_html(record):
-    """Generate HTML gallery page with Cloudinary URLs"""
-    docs = []
-    
-    # Collect document URLs from cloudinary_urls field
-    for i, url in enumerate(record.cloudinary_urls):
-        docs.append({
-            'url': url,
-            'label': f'Document {i+1}',
-            'download_url': url.replace('/upload/', '/upload/fl_attachment/')
-        })
-    
-    # Generate ZIP download URL using Cloudinary's archive feature
-    public_ids = []
-    for url in record.cloudinary_urls:
-        if 'cloudinary.com' in url:
-            # Extract public ID from URL
-            parts = url.split('/')
-            if len(parts) > 7:
-                public_id = '/'.join(parts[-2:]).split('.')[0]
-                public_ids.append(public_id)
-    
-    zip_url = ""
-    if public_ids:
-        cloud_name = settings.CLOUDINARY_CLOUD_NAME
-        zip_url = f"https://res.cloudinary.com/{cloud_name}/image/upload/fl_attachment,archive={','.join(public_ids)}.zip"
-    
-    html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Documents for {record.name}</title>
-        <style>
-            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
-            .container {{ max-width: 1200px; margin: 0 auto; }}
-            .header {{ text-align: center; margin-bottom: 40px; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }}
-            .header h1 {{ color: #333; margin-bottom: 10px; font-size: 2.5em; }}
-            .header p {{ color: #666; font-size: 1.1em; }}
-            .gallery {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }}
-            .doc-card {{ background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease; }}
-            .doc-card:hover {{ transform: translateY(-5px); }}
-            .doc-image {{ width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid #eee; }}
-            .doc-info {{ padding: 20px; text-align: center; }}
-            .doc-info h3 {{ margin: 0 0 15px 0; color: #333; font-size: 1.2em; }}
-            .btn-group {{ display: flex; gap: 10px; justify-content: center; }}
-            .btn {{ padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }}
-            .btn-view {{ background: #667eea; color: white; }}
-            .btn-view:hover {{ background: #5a67d8; }}
-            .btn-download {{ background: #48bb78; color: white; }}
-            .btn-download:hover {{ background: #38a169; }}
-            .download-all {{ display: block; width: 300px; margin: 0 auto; padding: 20px; background: linear-gradient(45deg, #667eea, #764ba2); color: white; text-align: center; text-decoration: none; border-radius: 15px; font-weight: bold; font-size: 1.2em; box-shadow: 0 8px 25px rgba(0,0,0,0.2); transition: transform 0.3s ease; }}
-            .download-all:hover {{ transform: translateY(-2px); }}
-            .footer {{ text-align: center; margin-top: 40px; color: rgba(255,255,255,0.8); }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>📄 Documents for {record.name}</h1>
-                <p><strong>📞 Contact:</strong> {record.contact_no}</p>
-                <p><strong>🏷️ Type:</strong> {record.get_record_type_display()}</p>
-                <p><strong>📅 Created:</strong> {record.created_at.strftime('%B %d, %Y')}</p>
-            </div>
-            
-            <div class="gallery">
-    """
-    
-    for doc in docs:
-        html += f"""
-                <div class="doc-card">
-                    <img src="{doc['url']}" alt="{doc['label']}" class="doc-image" loading="lazy">
-                    <div class="doc-info">
-                        <h3>{doc['label']}</h3>
-                        <div class="btn-group">
-                            <a href="{doc['url']}" class="btn btn-view" target="_blank">👁️ View</a>
-                            <a href="{doc['download_url']}" class="btn btn-download" target="_blank">⬇️ Download</a>
-                        </div>
-                    </div>
-                </div>
-        """
-    
-    html += """
-            </div>
-            
-    """
-    
-    if zip_url:
-        html += f"""
-            <a href="{zip_url}" class="download-all" target="_blank">
-                📦 Download All Documents (ZIP)
-            </a>
-        """
-    
-    html += f"""
-            <div class="footer">
-                <p>Generated by RTO Management System | Secure Document Storage</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-    
-    return html
 
-def save_html_file(record, content):
-    """Save HTML to local file with proper Netlify folder structure"""
-    # Create folder for this record
-    record_folder = f'netlify_uploads/record_{record.id}'
-    os.makedirs(record_folder, exist_ok=True)
-    
-    # Save HTML as index.html inside the record folder
-    filepath = os.path.join(record_folder, 'index.html')
-    
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(content)
-    
-    # Create _redirects file in the record folder
-    redirects_path = os.path.join(record_folder, '_redirects')
-    with open(redirects_path, 'w') as f:
-        f.write('/* /index.html 200\n')
-    
-    print(f"HTML file saved: {filepath}")
-    print(f"Redirects file created: {redirects_path}")
-    
-    return f'record_{record.id}'  # Return folder name
+@login_required
+def qr_success_view(request, record_id):
+    record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
+    return render(request, 'core/qr_success.html', {'record': record})
 
 
-def generate_qr_code_for_record(record, url):
-    """Generate QR code pointing to the gallery URL"""
-    qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
-        border=4,
-    )
-    qr.add_data(url)
-    qr.make(fit=True)
-    
-    # Create QR image
-    img = qr.make_image(fill_color="black", back_color="white")
-    
-    # Save to model
-    blob = BytesIO()
-    img.save(blob, 'PNG')
-    blob.seek(0)
-    
-    record.qr_code_image.save(f'qr_{record.id}.png', File(blob), save=False)
-    record.save()
-
-# Add all your other missing views
 @login_required
 def generate_qr_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
-    if not record.has_documents():
+    cloudinary_urls = get_cloudinary_urls(record)
+    
+    if not cloudinary_urls:
         messages.error(request, 'Please upload at least one document before generating QR code.')
         return redirect('core:record_detail', record_id=record.id)
+    
     try:
-        qr_url = record.generate_qr_code()
+        # Generate static HTML
+        generate_static_html(record)
+        
+        # Generate QR code
+        netlify_url = f"https://rto-document-gallery.netlify.app/record_{record.id}/"
+        generate_qr_code_for_record(record, netlify_url)
+        record.gallery_html_url = netlify_url
+        record.save()
+        
+        # Deploy to GitHub
+        auto_deploy_to_github(record)
+        
         messages.success(request, 'QR code generated successfully!')
         return redirect('core:record_detail', record_id=record.id)
     except Exception as e:
         messages.error(request, f'Failed to generate QR code: {str(e)}')
         return redirect('core:record_detail', record_id=record.id)
 
+
 @login_required
 def qr_preview_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
     return render(request, 'qr_preview.html', {'record': record})
+
 
 @require_POST
 @login_required
 def create_payment_order(request):
     return JsonResponse({'success': True, 'message': 'Payment order created'})
 
+
 @login_required
 def download_qr_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
     if not record.qr_code_image:
-        record.generate_qr_code()
+        # Generate QR code if it doesn't exist
+        netlify_url = f"https://rto-document-gallery.netlify.app/record_{record.id}/"
+        generate_qr_code_for_record(record, netlify_url)
     return render(request, 'core/download_qr.html', {'record': record})
+
 
 @login_required
 def orders_view(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'orders.html', {'orders': orders})
 
+
 @login_required
 def order_detail_view(request, order_id):
     order = get_object_or_404(Order, order_id=order_id, user=request.user)
     return render(request, 'order_detail.html', {'order': order})
 
+
 @login_required
 def order_success_view(request, order_id):
     order = get_object_or_404(Order, order_id=order_id, user=request.user)
     return render(request, 'order_success.html', {'order': order})
+
 
 @login_required
 def order_cancel_view(request, order_id):
@@ -465,28 +579,48 @@ def order_cancel_view(request, order_id):
     messages.info(request, "Order cancellation requested.")
     return redirect('core:orders')
 
+
 @login_required
 def verify_record_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id)
     return render(request, 'verify_record.html', {'record': record})
 
+
 @login_required
 def profile_view(request):
     return render(request, 'profile.html')
+
 
 @login_required
 def edit_profile_view(request):
     return render(request, 'edit_profile.html')
 
+
 @login_required
 def search_records_view(request):
     return redirect('core:dashboard')
 
+
 @login_required
 def export_records_view(request):
     return redirect('core:dashboard')
-@login_required
-def qr_success_view(request, record_id):
-    record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
-    return render(request, 'core/qr_success.html', {'record': record})
 
+
+# Legacy function kept for compatibility (not used in new flow)
+def save_html_file(record, content):
+    """Legacy function - kept for compatibility"""
+    record_folder = f'netlify_uploads/record_{record.id}'
+    os.makedirs(record_folder, exist_ok=True)
+    
+    filepath = os.path.join(record_folder, 'index.html')
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    
+    return f'record_{record.id}'
+
+
+# Legacy function kept for compatibility (not used in new flow) 
+def generate_gallery_html(record):
+    """Legacy function - kept for compatibility"""
+    cloudinary_urls = get_cloudinary_urls(record)
+    return generate_inline_html(record, cloudinary_urls)
