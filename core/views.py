@@ -6,7 +6,6 @@ import qrcode
 import os
 import subprocess
 from io import BytesIO
-from urllib.parse import urljoin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -281,65 +280,41 @@ def get_cloudinary_urls(record):
     return urls
 
 
-
 def generate_static_html(record):
-    """Generate static HTML file for the record"""
-    # Get Cloudinary URLs
+    """Generate static HTML file for the record in deploy_site folder"""
     cloudinary_urls = get_cloudinary_urls(record)
     
-    # Create context for template
+    print(f"🔍 DEBUG: Creating HTML for record {record.id}")
+    print(f"📋 Found {len(cloudinary_urls)} documents")
+    
     context = {
         'record': record,
         'cloudinary_urls': cloudinary_urls,
     }
     
-    # Generate HTML content
+    # Generate HTML content using your existing template
     try:
         html_content = render_to_string('document_gallery.html', context)
-    except:
+    except Exception as e:
+        print(f"❌ Template error: {e}")
         html_content = generate_inline_html(record, cloudinary_urls)
     
-    # Create folder structure for Netlify (in static_site folder)
-    folder_path = f'static_site/record_{record.id}'
+    # Create folder structure for Netlify (using deploy_site now)
+    folder_path = f'deploy_site/record_{record.id}'
     os.makedirs(folder_path, exist_ok=True)
     
     # Write HTML file
     with open(os.path.join(folder_path, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    # Ensure _redirects file exists
-    redirects_path = 'static_site/_redirects'
-    if not os.path.exists(redirects_path):
-        with open(redirects_path, 'w') as f:
-            f.write('/* /index.html 200\n')
-    
-    print(f"✅ Generated HTML for record: {record.id}")
-
-def auto_deploy_to_github(record):
-    """Automatically commit and push to GitHub"""
-    try:
-        # Add new files
-        subprocess.run(['git', 'add', 'static_site/'], check=True)
-        
-        # Commit changes
-        commit_message = f"Add document gallery for record {record.id}"
-        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
-        
-        # Push to GitHub
-        subprocess.run(['git', 'push', 'origin', 'main'], check=True)
-        
-        print(f"✅ Successfully deployed record {record.id} to GitHub")
-        
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Error deploying to GitHub: {e}")
-
+    print(f"✅ Generated HTML file: {folder_path}/index.html")
 
 
 def generate_inline_html(record, cloudinary_urls):
     """Generate HTML content inline if template is not available"""
     docs_html = ""
     for i, url in enumerate(cloudinary_urls):
-        download_url = url.replace('/upload/', '/upload/fl_attachment/')
+        download_url = f"{url}?fl_attachment"
         docs_html += f"""
         <div class="doc-card">
             <img src="{url}" alt="Document {i+1}" class="doc-image" loading="lazy">
@@ -353,54 +328,52 @@ def generate_inline_html(record, cloudinary_urls):
         </div>
         """
     
-    html_content = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Documents for {record.name}</title>
-        <style>
-            body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
-            .container {{ max-width: 1200px; margin: 0 auto; }}
-            .header {{ text-align: center; margin-bottom: 40px; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }}
-            .header h1 {{ color: #333; margin-bottom: 10px; font-size: 2.5em; }}
-            .header p {{ color: #666; font-size: 1.1em; }}
-            .gallery {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }}
-            .doc-card {{ background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease; }}
-            .doc-card:hover {{ transform: translateY(-5px); }}
-            .doc-image {{ width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid #eee; }}
-            .doc-info {{ padding: 20px; text-align: center; }}
-            .doc-info h3 {{ margin: 0 0 15px 0; color: #333; font-size: 1.2em; }}
-            .btn-group {{ display: flex; gap: 10px; justify-content: center; }}
-            .btn {{ padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }}
-            .btn-view {{ background: #667eea; color: white; }}
-            .btn-view:hover {{ background: #5a67d8; }}
-            .btn-download {{ background: #48bb78; color: white; }}
-            .btn-download:hover {{ background: #38a169; }}
-            .footer {{ text-align: center; margin-top: 40px; color: rgba(255,255,255,0.8); }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>📄 Documents for {record.name}</h1>
-                <p><strong>📞 Contact:</strong> {record.contact_no}</p>
-                <p><strong>🏷️ Type:</strong> {record.get_record_type_display()}</p>
-                <p><strong>📅 Created:</strong> {record.created_at.strftime('%B %d, %Y')}</p>
-            </div>
-            
-            <div class="gallery">
-                {docs_html}
-            </div>
-            
-            <div class="footer">
-                <p>Generated by RTO Management System | Secure Document Storage</p>
-            </div>
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documents for {record.name}</title>
+    <style>
+        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        .header {{ text-align: center; margin-bottom: 40px; background: rgba(255,255,255,0.95); padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }}
+        .header h1 {{ color: #333; margin-bottom: 10px; font-size: 2.5em; }}
+        .header p {{ color: #666; font-size: 1.1em; }}
+        .gallery {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-bottom: 40px; }}
+        .doc-card {{ background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); transition: transform 0.3s ease; }}
+        .doc-card:hover {{ transform: translateY(-5px); }}
+        .doc-image {{ width: 100%; height: 250px; object-fit: cover; border-bottom: 1px solid #eee; }}
+        .doc-info {{ padding: 20px; text-align: center; }}
+        .doc-info h3 {{ margin: 0 0 15px 0; color: #333; font-size: 1.2em; }}
+        .btn-group {{ display: flex; gap: 10px; justify-content: center; }}
+        .btn {{ padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }}
+        .btn-view {{ background: #667eea; color: white; }}
+        .btn-view:hover {{ background: #5a67d8; }}
+        .btn-download {{ background: #48bb78; color: white; }}
+        .btn-download:hover {{ background: #38a169; }}
+        .footer {{ text-align: center; margin-top: 40px; color: rgba(255,255,255,0.8); }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 Documents for {record.name}</h1>
+            <p><strong>📞 Contact:</strong> {record.contact_no}</p>
+            <p><strong>🏷️ Type:</strong> {record.get_record_type_display()}</p>
+            <p><strong>📅 Created:</strong> {record.created_at.strftime('%B %d, %Y')}</p>
         </div>
-    </body>
-    </html>
-    """
+        
+        <div class="gallery">
+            {docs_html}
+        </div>
+        
+        <div class="footer">
+            <p>Generated by RTO Management System | Secure Document Storage</p>
+        </div>
+    </div>
+</body>
+</html>"""
     return html_content
 
 
@@ -410,8 +383,8 @@ def auto_deploy_to_github(record):
         # Change to project directory
         os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         
-        # Add new files
-        subprocess.run(['git', 'add', 'netlify_uploads/'], check=True)
+        # Add new files (FIXED: Changed from static_site/ to deploy_site/)
+        subprocess.run(['git', 'add', 'deploy_site/'], check=True)
         
         # Check if there are changes to commit
         result = subprocess.run(['git', 'diff', '--staged', '--quiet'], capture_output=True)
@@ -426,12 +399,12 @@ def auto_deploy_to_github(record):
         # Push to GitHub
         subprocess.run(['git', 'push', 'origin', 'main'], check=True)
         
-        print(f"Successfully deployed record {record.id} to GitHub")
+        print(f"✅ Successfully deployed record {record.id} to GitHub")
         
     except subprocess.CalledProcessError as e:
-        print(f"Error deploying to GitHub: {e}")
+        print(f"❌ Error deploying to GitHub: {e}")
     except Exception as e:
-        print(f"Unexpected error during GitHub deployment: {e}")
+        print(f"❌ Unexpected error during GitHub deployment: {e}")
 
 
 def generate_qr_code_for_record(record, url):
@@ -498,10 +471,8 @@ def verify_payment(request):
     # Auto-commit and push to GitHub
     auto_deploy_to_github(record)
     
-    # Generate QR code with Netlify URL
-    # In your verify_payment view, change this line:
-    # In your verify_payment view, update this line:
-    netlify_url = f"https://YOUR-NEW-SITE-NAME.netlify.app/record_{record.id}/"
+    # Generate QR code with Netlify URL (FIXED: Using consistent domain)
+    netlify_url = f"https://spiffy-croquembouche-98a629.netlify.app/record_{record.id}/"
     generate_qr_code_for_record(record, netlify_url)
     
     record.gallery_html_url = netlify_url
@@ -530,8 +501,8 @@ def generate_qr_view(request, record_id):
         # Generate static HTML
         generate_static_html(record)
         
-        # Generate QR code
-        netlify_url = f"https://rto-document-gallery.netlify.app/record_{record.id}/"
+        # Generate QR code (FIXED: Using consistent domain)
+        netlify_url = f"https://spiffy-croquembouche-98a629.netlify.app/record_{record.id}/"
         generate_qr_code_for_record(record, netlify_url)
         record.gallery_html_url = netlify_url
         record.save()
@@ -562,8 +533,8 @@ def create_payment_order(request):
 def download_qr_view(request, record_id):
     record = get_object_or_404(RTORecord, id=record_id, owner=request.user)
     if not record.qr_code_image:
-        # Generate QR code if it doesn't exist
-        netlify_url = f"https://rto-document-gallery.netlify.app/record_{record.id}/"
+        # Generate QR code if it doesn't exist (FIXED: Using consistent domain)
+        netlify_url = f"https://spiffy-croquembouche-98a629.netlify.app/record_{record.id}/"
         generate_qr_code_for_record(record, netlify_url)
     return render(request, 'core/download_qr.html', {'record': record})
 
@@ -617,23 +588,3 @@ def search_records_view(request):
 @login_required
 def export_records_view(request):
     return redirect('core:dashboard')
-
-
-# Legacy function kept for compatibility (not used in new flow)
-def save_html_file(record, content):
-    """Legacy function - kept for compatibility"""
-    record_folder = f'netlify_uploads/record_{record.id}'
-    os.makedirs(record_folder, exist_ok=True)
-    
-    filepath = os.path.join(record_folder, 'index.html')
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(content)
-    
-    return f'record_{record.id}'
-
-
-# Legacy function kept for compatibility (not used in new flow) 
-def generate_gallery_html(record):
-    """Legacy function - kept for compatibility"""
-    cloudinary_urls = get_cloudinary_urls(record)
-    return generate_inline_html(record, cloudinary_urls)

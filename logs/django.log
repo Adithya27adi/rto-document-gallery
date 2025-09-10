@@ -2234,3 +2234,34 @@ INFO 2025-09-10 08:59:31,180 basehttp 5921 133708271056576 "GET /records/ac5fe4b
 INFO 2025-09-10 09:00:03,593 basehttp 5921 133708271056576 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
 INFO 2025-09-10 09:00:03,662 basehttp 5921 133708271056576 "GET /qr-success/ac5fe4bc-f60c-4721-888e-f87b93ccd3bb/ HTTP/1.1" 200 9267
 INFO 2025-09-10 09:00:03,744 basehttp 5921 133708271056576 "GET /media/qr_codes/qr_ac5fe4bc-f60c-4721-888e-f87b93ccd3bb.png HTTP/1.1" 200 992
+INFO 2025-09-10 10:10:33,484 autoreload 8856 124490805559424 Watching for file changes with StatReloader
+INFO 2025-09-10 10:10:39,232 basehttp 8856 124490633705152 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 10:10:39,295 basehttp 8856 124490633705152 "GET /dashboard/ HTTP/1.1" 200 42819
+INFO 2025-09-10 10:10:42,228 basehttp 8856 124490633705152 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 10:11:14,918 basehttp 8856 124490633705152 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 10:11:16,353 basehttp 8856 124490633705152 "GET /records/111a74b9-8321-49c5-b186-b13948fabfaa/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 10:11:45,313 basehttp 8856 124490633705152 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 10:11:45,364 basehttp 8856 124490633705152 "GET /qr-success/111a74b9-8321-49c5-b186-b13948fabfaa/ HTTP/1.1" 200 9268
+INFO 2025-09-10 10:11:45,472 basehttp 8856 124490633705152 "GET /media/qr_codes/qr_111a74b9-8321-49c5-b186-b13948fabfaa.png HTTP/1.1" 200 978
+INFO 2025-09-10 10:15:06,833 autoreload 8856 124490805559424 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:15:07,320 autoreload 9337 130919445299328 Watching for file changes with StatReloader
+INFO 2025-09-10 10:15:08,763 autoreload 9337 130919445299328 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:15:09,264 autoreload 9360 140265586102400 Watching for file changes with StatReloader
+INFO 2025-09-10 10:15:52,728 autoreload 9360 140265586102400 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:15:53,198 autoreload 9404 123636705452160 Watching for file changes with StatReloader
+INFO 2025-09-10 10:15:54,611 autoreload 9404 123636705452160 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:15:55,073 autoreload 9425 132468897894528 Watching for file changes with StatReloader
+INFO 2025-09-10 10:19:30,567 autoreload 9425 132468897894528 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:19:31,123 autoreload 9506 140472044613760 Watching for file changes with StatReloader
+INFO 2025-09-10 10:19:32,588 autoreload 9506 140472044613760 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:19:33,104 autoreload 9530 131519382114432 Watching for file changes with StatReloader
+INFO 2025-09-10 10:20:06,305 autoreload 9530 131519382114432 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:20:06,752 autoreload 9575 126001622171776 Watching for file changes with StatReloader
+INFO 2025-09-10 10:20:08,177 autoreload 9575 126001622171776 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:20:08,752 autoreload 9612 137114029817984 Watching for file changes with StatReloader
+INFO 2025-09-10 10:20:10,966 autoreload 9612 137114029817984 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:20:11,427 autoreload 9617 130615651909760 Watching for file changes with StatReloader
+INFO 2025-09-10 10:24:12,598 autoreload 9617 130615651909760 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:24:13,254 autoreload 9691 132870451925120 Watching for file changes with StatReloader
+INFO 2025-09-10 10:25:28,460 autoreload 9691 132870451925120 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 10:25:28,976 autoreload 9797 131813479891072 Watching for file changes with StatReloader
