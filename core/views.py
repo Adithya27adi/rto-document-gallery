@@ -283,13 +283,9 @@ def get_cloudinary_urls(record):
 
 
 def generate_static_html(record):
-    """Generate static HTML file for the record using Django template"""
-    # Get Cloudinary URLs for this record
+    """Generate static HTML file for the record"""
+    # Get Cloudinary URLs
     cloudinary_urls = get_cloudinary_urls(record)
-    
-    print(f"Found {len(cloudinary_urls)} documents for record {record.id}")
-    for url in cloudinary_urls:
-        print(f"Document URL: {url}")
     
     # Create context for template
     context = {
@@ -297,30 +293,46 @@ def generate_static_html(record):
         'cloudinary_urls': cloudinary_urls,
     }
     
-    # Try to render using Django template first
+    # Generate HTML content
     try:
         html_content = render_to_string('document_gallery.html', context)
-    except Exception as e:
-        print(f"Template error: {e}")
-        # Fallback to inline HTML generation if template doesn't exist
+    except:
         html_content = generate_inline_html(record, cloudinary_urls)
     
-    # Create folder structure for Netlify
-    folder_path = f'netlify_uploads/record_{record.id}'
+    # Create folder structure for Netlify (in static_site folder)
+    folder_path = f'static_site/record_{record.id}'
     os.makedirs(folder_path, exist_ok=True)
     
     # Write HTML file
     with open(os.path.join(folder_path, 'index.html'), 'w', encoding='utf-8') as f:
         f.write(html_content)
     
-    # Create _redirects file at root level if it doesn't exist
-    redirects_path = 'netlify_uploads/_redirects'
-    os.makedirs('netlify_uploads', exist_ok=True)
+    # Ensure _redirects file exists
+    redirects_path = 'static_site/_redirects'
     if not os.path.exists(redirects_path):
         with open(redirects_path, 'w') as f:
             f.write('/* /index.html 200\n')
     
-    print(f"Generated HTML for record: {record.id}")
+    print(f"✅ Generated HTML for record: {record.id}")
+
+def auto_deploy_to_github(record):
+    """Automatically commit and push to GitHub"""
+    try:
+        # Add new files
+        subprocess.run(['git', 'add', 'static_site/'], check=True)
+        
+        # Commit changes
+        commit_message = f"Add document gallery for record {record.id}"
+        subprocess.run(['git', 'commit', '-m', commit_message], check=True)
+        
+        # Push to GitHub
+        subprocess.run(['git', 'push', 'origin', 'main'], check=True)
+        
+        print(f"✅ Successfully deployed record {record.id} to GitHub")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error deploying to GitHub: {e}")
+
 
 
 def generate_inline_html(record, cloudinary_urls):
@@ -488,7 +500,8 @@ def verify_payment(request):
     
     # Generate QR code with Netlify URL
     # In your verify_payment view, change this line:
-    netlify_url = f"https://YOUR-ACTUAL-NETLIFY-DOMAIN.netlify.app/record_{record.id}/"
+    # In your verify_payment view, update this line:
+    netlify_url = f"https://YOUR-NEW-SITE-NAME.netlify.app/record_{record.id}/"
     generate_qr_code_for_record(record, netlify_url)
     
     record.gallery_html_url = netlify_url
