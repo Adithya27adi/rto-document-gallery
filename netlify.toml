@@ -1,5 +1,5 @@
 [build]
-  publish = "static_site"
+  publish = "deploy_site"
 
 [[redirects]]
   from = "/*"
