@@ -2274,3 +2274,236 @@ INFO 2025-09-10 10:29:08,128 basehttp 10006 135571055834816 "GET /records/25d8a5
 INFO 2025-09-10 10:29:38,691 basehttp 10006 135571055834816 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
 INFO 2025-09-10 10:29:38,747 basehttp 10006 135571055834816 "GET /qr-success/25d8a5bb-95e7-4d75-b116-9d998ec78f4f/ HTTP/1.1" 200 9268
 INFO 2025-09-10 10:29:38,856 basehttp 10006 135571055834816 "GET /media/qr_codes/qr_25d8a5bb-95e7-4d75-b116-9d998ec78f4f.png HTTP/1.1" 200 950
+INFO 2025-09-10 10:35:11,116 autoreload 10672 125533242069120 Watching for file changes with StatReloader
+INFO 2025-09-10 10:35:16,081 basehttp 10672 125533077632704 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 10:35:16,117 basehttp 10672 125533077632704 "GET /dashboard/ HTTP/1.1" 200 42819
+INFO 2025-09-10 10:35:19,951 basehttp 10672 125533077632704 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 10:35:39,002 basehttp 10672 125533077632704 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 10:35:39,376 basehttp 10672 125533077632704 "GET /records/f01efbdc-78fc-4363-ace1-a5347248c91d/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 10:36:12,507 basehttp 10672 125533077632704 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 10:36:12,567 basehttp 10672 125533077632704 "GET /qr-success/f01efbdc-78fc-4363-ace1-a5347248c91d/ HTTP/1.1" 200 9268
+INFO 2025-09-10 10:36:12,645 basehttp 10672 125533077632704 "GET /media/qr_codes/qr_f01efbdc-78fc-4363-ace1-a5347248c91d.png HTTP/1.1" 200 1015
+INFO 2025-09-10 10:39:57,684 basehttp 10672 125533077632704 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 10:40:27,348 basehttp 10672 125533077632704 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 10:40:28,058 basehttp 10672 125533077632704 "GET /records/c9c93af2-0056-4a58-ad83-d35bde128a17/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 10:40:57,209 basehttp 10672 125533077632704 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 10:40:57,271 basehttp 10672 125533077632704 "GET /qr-success/c9c93af2-0056-4a58-ad83-d35bde128a17/ HTTP/1.1" 200 9268
+INFO 2025-09-10 10:40:57,359 basehttp 10672 125533077632704 "GET /media/qr_codes/qr_c9c93af2-0056-4a58-ad83-d35bde128a17.png HTTP/1.1" 200 1032
+INFO 2025-09-10 10:43:27,855 basehttp 10672 125533077632704 "GET /media/qr_codes/qr_c9c93af2-0056-4a58-ad83-d35bde128a17.png HTTP/1.1" 200 1032
+INFO 2025-09-10 10:46:38,953 autoreload 11887 140309079584896 Watching for file changes with StatReloader
+INFO 2025-09-10 10:46:46,192 basehttp 11887 140308914370240 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 10:46:46,223 basehttp 11887 140308914370240 "GET /dashboard/ HTTP/1.1" 200 42819
+INFO 2025-09-10 10:46:48,947 basehttp 11887 140308914370240 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 10:47:19,364 basehttp 11887 140308914370240 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 10:47:20,111 basehttp 11887 140308914370240 "GET /records/b11dfeb3-1c54-4e82-a763-c6f4d5135640/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 10:47:51,518 basehttp 11887 140308914370240 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 10:47:51,580 basehttp 11887 140308914370240 "GET /qr-success/b11dfeb3-1c54-4e82-a763-c6f4d5135640/ HTTP/1.1" 200 9268
+INFO 2025-09-10 10:47:51,657 basehttp 11887 140308914370240 "GET /media/qr_codes/qr_b11dfeb3-1c54-4e82-a763-c6f4d5135640.png HTTP/1.1" 200 970
+INFO 2025-09-10 10:58:52,487 basehttp 11887 140308914370240 "GET /records/create/school/ HTTP/1.1" 200 13345
+INFO 2025-09-10 10:59:17,306 basehttp 11887 140308914370240 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 10:59:18,292 basehttp 11887 140308914370240 "GET /records/64da5f81-0f3e-4621-93d4-e255b33610cf/payment/qr_download/ HTTP/1.1" 200 9906
+ERROR 2025-09-10 10:59:43,789 log 11887 140308914370240 Internal Server Error: /ajax/verify-payment/
+Traceback (most recent call last):
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/views/decorators/csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/contrib/auth/decorators.py", line 23, in _wrapper_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/Desktop/rto_project(backup)/core/views.py", line 469, in verify_payment
+    generate_static_html(record)
+  File "/home/adithya/Desktop/rto_project(backup)/core/views.py", line 285, in generate_static_html
+    cloudinary_urls = get_cloudinary_urls(record)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/Desktop/rto_project(backup)/core/views.py", line 255, in get_cloudinary_urls
+    if record.marks_card:
+      ^^^^^^^^^^^^^^^^^
+AttributeError: 'RTORecord' object has no attribute 'marks_card'
+ERROR 2025-09-10 10:59:43,796 basehttp 11887 140308914370240 "POST /ajax/verify-payment/ HTTP/1.1" 500 97180
+INFO 2025-09-10 10:59:53,652 basehttp 11887 140308914370240 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 11:00:14,236 basehttp 11887 140308914370240 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 11:00:15,800 basehttp 11887 140308914370240 "GET /records/5473f68e-0ad9-4374-ae85-d324135d1649/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:00:46,545 basehttp 11887 140308914370240 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:00:46,608 basehttp 11887 140308914370240 "GET /qr-success/5473f68e-0ad9-4374-ae85-d324135d1649/ HTTP/1.1" 200 9268
+INFO 2025-09-10 11:00:46,667 basehttp 11887 140308914370240 "GET /media/qr_codes/qr_5473f68e-0ad9-4374-ae85-d324135d1649.png HTTP/1.1" 200 998
+INFO 2025-09-10 11:01:57,036 basehttp 11887 140308914370240 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 11:02:37,760 basehttp 11887 140308914370240 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 11:02:39,120 basehttp 11887 140308914370240 "GET /records/d90cab6d-3d26-4fb9-adb9-11e65528e45f/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:03:10,156 basehttp 11887 140308914370240 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:03:10,216 basehttp 11887 140308914370240 "GET /qr-success/d90cab6d-3d26-4fb9-adb9-11e65528e45f/ HTTP/1.1" 200 9268
+INFO 2025-09-10 11:03:10,294 basehttp 11887 140308914370240 "GET /media/qr_codes/qr_d90cab6d-3d26-4fb9-adb9-11e65528e45f.png HTTP/1.1" 200 1006
+INFO 2025-09-10 11:14:07,763 autoreload 11887 140309079584896 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:08,532 autoreload 13342 134726484758656 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:11,190 autoreload 13342 134726484758656 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:11,709 autoreload 13372 123287397822592 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:18,041 autoreload 13372 123287397822592 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:18,482 autoreload 13403 140058759561344 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:28,064 autoreload 13403 140058759561344 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:28,638 autoreload 13456 138554885775488 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:37,998 autoreload 13456 138554885775488 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:38,431 autoreload 13510 137312771518592 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:43,733 autoreload 13510 137312771518592 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:44,338 autoreload 13565 127818431619200 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:45,514 autoreload 13565 127818431619200 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:45,979 autoreload 13585 126682635686016 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:47,241 autoreload 13585 126682635686016 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:47,720 autoreload 13590 136880100802688 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:48,903 autoreload 13590 136880100802688 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:49,362 autoreload 13595 124499652968576 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:51,554 autoreload 13595 124499652968576 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:52,023 autoreload 13623 137017052061824 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:54,223 autoreload 13623 137017052061824 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:54,729 autoreload 13637 138670407245952 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:55,923 autoreload 13637 138670407245952 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:56,419 autoreload 13659 137559159435392 Watching for file changes with StatReloader
+INFO 2025-09-10 11:14:58,615 autoreload 13659 137559159435392 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:14:59,077 autoreload 13665 132781940027520 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:00,288 autoreload 13665 132781940027520 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:00,734 autoreload 13684 127719876022400 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:04,984 autoreload 13684 127719876022400 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:05,392 autoreload 13718 135688053354624 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:08,637 autoreload 13718 135688053354624 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:09,051 autoreload 13741 140003770032256 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:11,254 autoreload 13741 140003770032256 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:11,685 autoreload 13769 139826672701568 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:24,418 autoreload 13769 139826672701568 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:24,906 autoreload 13805 126713028952192 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:26,367 autoreload 13805 126713028952192 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:26,771 autoreload 13828 132097019666560 Watching for file changes with StatReloader
+INFO 2025-09-10 11:15:31,275 autoreload 13828 132097019666560 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:15:31,778 autoreload 13851 133299719954560 Watching for file changes with StatReloader
+INFO 2025-09-10 11:16:53,042 autoreload 13851 133299719954560 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:16:53,599 autoreload 13936 124387212640384 Watching for file changes with StatReloader
+INFO 2025-09-10 11:17:24,717 autoreload 13936 124387212640384 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:17:25,207 autoreload 13996 139812181037184 Watching for file changes with StatReloader
+INFO 2025-09-10 11:17:29,959 autoreload 14052 136536728948864 Watching for file changes with StatReloader
+INFO 2025-09-10 11:17:34,739 basehttp 14052 136536632850112 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 11:17:34,766 basehttp 14052 136536632850112 "GET /dashboard/ HTTP/1.1" 200 42511
+INFO 2025-09-10 11:17:37,195 basehttp 14052 136536632850112 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 11:18:06,648 basehttp 14052 136536632850112 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 11:18:07,568 basehttp 14052 136536632850112 "GET /records/24fcce57-cd03-41b9-9b3a-b2452ff5d271/payment/qr_download/ HTTP/1.1" 200 9906
+ERROR 2025-09-10 11:18:48,919 log 14052 136536632850112 Internal Server Error: /ajax/verify-payment/
+Traceback (most recent call last):
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 204, in _get_response
+    self.check_response(response, callback)
+  File "/home/adithya/rto_project/venv/lib/python3.12/site-packages/django/core/handlers/base.py", line 332, in check_response
+    raise ValueError(
+ValueError: The view core.views.verify_payment didn't return an HttpResponse object. It returned None instead.
+ERROR 2025-09-10 11:18:48,920 basehttp 14052 136536632850112 "POST /ajax/verify-payment/ HTTP/1.1" 500 79757
+INFO 2025-09-10 11:19:10,913 autoreload 14052 136536728948864 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:11,432 autoreload 14458 134179426967680 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:12,900 autoreload 14458 134179426967680 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:13,311 autoreload 14490 132138787274880 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:16,745 autoreload 14490 132138787274880 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:17,206 autoreload 14505 132277999759488 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:18,604 autoreload 14505 132277999759488 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:19,092 autoreload 14525 138890002477184 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:21,507 autoreload 14525 138890002477184 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:21,966 autoreload 14536 126621244117120 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:23,376 autoreload 14536 126621244117120 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:23,840 autoreload 14561 129875066474624 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:33,176 autoreload 14561 129875066474624 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:33,603 autoreload 14590 130299377602688 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:34,787 autoreload 14590 130299377602688 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:35,202 autoreload 14611 131034149040256 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:38,610 autoreload 14611 131034149040256 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:39,067 autoreload 14628 128846491250816 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:41,514 autoreload 14628 128846491250816 /home/adithya/Desktop/rto_project(backup)/core/views.py changed, reloading.
+INFO 2025-09-10 11:19:42,006 autoreload 14654 136045456670848 Watching for file changes with StatReloader
+INFO 2025-09-10 11:19:46,373 basehttp 14654 136045291108032 "GET /records/24fcce57-cd03-41b9-9b3a-b2452ff5d271/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:20:11,927 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:20:11,966 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 6743
+INFO 2025-09-10 11:20:12,074 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 200 955
+INFO 2025-09-10 11:23:18,663 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 9284
+INFO 2025-09-10 11:23:18,722 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 304 0
+INFO 2025-09-10 11:29:28,296 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 9967
+INFO 2025-09-10 11:29:28,367 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 304 0
+INFO 2025-09-10 11:31:50,448 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 3896
+INFO 2025-09-10 11:31:50,515 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 304 0
+INFO 2025-09-10 11:43:12,220 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 9070
+INFO 2025-09-10 11:43:12,312 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 304 0
+INFO 2025-09-10 11:47:47,917 basehttp 14654 136045291108032 "GET /qr-success/24fcce57-cd03-41b9-9b3a-b2452ff5d271/ HTTP/1.1" 200 9014
+INFO 2025-09-10 11:47:47,993 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 304 0
+INFO 2025-09-10 11:48:04,991 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_24fcce57-cd03-41b9-9b3a-b2452ff5d271_A9UKJY3.png HTTP/1.1" 200 955
+INFO 2025-09-10 11:48:11,526 basehttp 14654 136045291108032 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 11:48:44,379 basehttp 14654 136045291108032 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 11:48:45,840 basehttp 14654 136045291108032 "GET /records/c7dea1af-af4c-45b6-95e8-5d6b8ea2749b/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:49:22,987 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:49:23,043 basehttp 14654 136045291108032 "GET /qr-success/c7dea1af-af4c-45b6-95e8-5d6b8ea2749b/ HTTP/1.1" 200 8998
+INFO 2025-09-10 11:49:23,146 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_c7dea1af-af4c-45b6-95e8-5d6b8ea2749b.png HTTP/1.1" 200 1003
+INFO 2025-09-10 11:51:14,618 basehttp 14654 136045291108032 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 11:51:47,379 basehttp 14654 136045291108032 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 11:51:47,953 basehttp 14654 136045291108032 "GET /records/b9619ec3-bdb4-4f0c-b3aa-91b694ce155a/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:52:20,271 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:52:20,328 basehttp 14654 136045291108032 "GET /qr-success/b9619ec3-bdb4-4f0c-b3aa-91b694ce155a/ HTTP/1.1" 200 8998
+INFO 2025-09-10 11:52:20,461 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_b9619ec3-bdb4-4f0c-b3aa-91b694ce155a.png HTTP/1.1" 200 1021
+INFO 2025-09-10 11:52:57,804 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_b9619ec3-bdb4-4f0c-b3aa-91b694ce155a.png HTTP/1.1" 200 1021
+INFO 2025-09-10 11:59:12,447 basehttp 14654 136045291108032 "GET /records/b9619ec3-bdb4-4f0c-b3aa-91b694ce155a/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 11:59:38,911 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 11:59:38,967 basehttp 14654 136045291108032 "GET /qr-success/b9619ec3-bdb4-4f0c-b3aa-91b694ce155a/ HTTP/1.1" 200 11642
+INFO 2025-09-10 11:59:39,104 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_b9619ec3-bdb4-4f0c-b3aa-91b694ce155a_WIeBh4d.png HTTP/1.1" 200 1021
+INFO 2025-09-10 12:00:41,074 basehttp 14654 136045291108032 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 12:01:12,957 basehttp 14654 136045291108032 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 12:01:13,403 basehttp 14654 136045291108032 "GET /records/bfdd62d5-9fa3-4ca1-ae64-ea44affb6803/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 12:01:47,997 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 12:01:48,056 basehttp 14654 136045291108032 "GET /qr-success/bfdd62d5-9fa3-4ca1-ae64-ea44affb6803/ HTTP/1.1" 200 11626
+INFO 2025-09-10 12:01:48,154 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_bfdd62d5-9fa3-4ca1-ae64-ea44affb6803.png HTTP/1.1" 200 976
+INFO 2025-09-10 12:02:43,805 basehttp 14654 136045291108032 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 12:04:26,753 basehttp 14654 136045291108032 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 12:04:27,664 basehttp 14654 136045291108032 "GET /records/cc86901c-8b68-4430-9701-9b6e27dd8b5c/payment/qr_download/ HTTP/1.1" 200 9912
+INFO 2025-09-10 12:05:27,352 basehttp 14654 136045291108032 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 12:05:27,410 basehttp 14654 136045291108032 "GET /qr-success/cc86901c-8b68-4430-9701-9b6e27dd8b5c/ HTTP/1.1" 200 11635
+INFO 2025-09-10 12:05:27,550 basehttp 14654 136045291108032 "GET /media/qr_codes/qr_cc86901c-8b68-4430-9701-9b6e27dd8b5c.png HTTP/1.1" 200 976
+INFO 2025-09-10 15:32:22,843 autoreload 7685 135778044575872 Watching for file changes with StatReloader
+INFO 2025-09-10 15:32:29,867 basehttp 7685 135777874867904 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 15:32:29,924 basehttp 7685 135777874867904 "GET /dashboard/ HTTP/1.1" 200 42514
+WARNING 2025-09-10 15:32:30,443 log 7685 135777874867904 Not Found: /favicon.ico
+WARNING 2025-09-10 15:32:30,444 basehttp 7685 135777874867904 "GET /favicon.ico HTTP/1.1" 404 7314
+INFO 2025-09-10 15:32:32,737 basehttp 7685 135777874867904 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 15:34:25,354 basehttp 7685 135777874867904 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 15:34:26,281 basehttp 7685 135777874867904 "GET /records/9187c33d-e01a-445d-9ac2-34de5fc55717/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 15:34:59,733 basehttp 7685 135777874867904 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 15:34:59,786 basehttp 7685 135777874867904 "GET /qr-success/9187c33d-e01a-445d-9ac2-34de5fc55717/ HTTP/1.1" 200 11626
+INFO 2025-09-10 15:34:59,922 basehttp 7685 135777874867904 "GET /media/qr_codes/qr_9187c33d-e01a-445d-9ac2-34de5fc55717.png HTTP/1.1" 200 950
+INFO 2025-09-10 15:37:10,183 basehttp 7685 135777874867904 "GET /qr-success/9187c33d-e01a-445d-9ac2-34de5fc55717/ HTTP/1.1" 200 11623
+INFO 2025-09-10 15:37:10,249 basehttp 7685 135777874867904 "GET /media/qr_codes/qr_9187c33d-e01a-445d-9ac2-34de5fc55717.png HTTP/1.1" 304 0
+WARNING 2025-09-10 15:37:56,236 log 7685 135777874867904 Not Found: /.well-known/appspecific/com.chrome.devtools.json
+WARNING 2025-09-10 15:37:56,237 basehttp 7685 135777874867904 "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404 7425
+INFO 2025-09-10 22:31:53,375 autoreload 7486 125727890866304 Watching for file changes with StatReloader
+INFO 2025-09-10 22:32:03,928 basehttp 7486 125727796098752 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 22:32:04,016 basehttp 7486 125727796098752 "GET /dashboard/ HTTP/1.1" 200 42514
+WARNING 2025-09-10 22:32:04,714 log 7486 125727796098752 Not Found: /favicon.ico
+WARNING 2025-09-10 22:32:04,715 basehttp 7486 125727796098752 "GET /favicon.ico HTTP/1.1" 404 7314
+INFO 2025-09-10 22:32:22,880 basehttp 7486 125727796098752 "GET /records/create/rto/ HTTP/1.1" 200 13336
+INFO 2025-09-10 22:36:53,814 autoreload 7486 125727890866304 /home/adithya/Desktop/copy2/core/urls.py changed, reloading.
+INFO 2025-09-10 22:36:54,871 autoreload 7808 124494020657280 Watching for file changes with StatReloader
+INFO 2025-09-10 22:36:58,766 autoreload 7808 124494020657280 /home/adithya/Desktop/copy2/core/urls.py changed, reloading.
+INFO 2025-09-10 22:36:59,800 autoreload 7833 138687926055040 Watching for file changes with StatReloader
+INFO 2025-09-10 22:37:07,866 autoreload 7833 138687926055040 /home/adithya/Desktop/copy2/core/urls.py changed, reloading.
+INFO 2025-09-10 22:37:08,778 autoreload 7878 130218547269760 Watching for file changes with StatReloader
+INFO 2025-09-10 22:37:16,684 autoreload 7878 130218547269760 /home/adithya/Desktop/copy2/core/urls.py changed, reloading.
+INFO 2025-09-10 22:37:17,583 autoreload 7924 124405893714048 Watching for file changes with StatReloader
+INFO 2025-09-10 22:43:21,101 autoreload 7924 124405893714048 /home/adithya/Desktop/copy2/core/views.py changed, reloading.
+INFO 2025-09-10 22:43:21,994 autoreload 8042 133198368895104 Watching for file changes with StatReloader
+INFO 2025-09-10 22:43:24,540 autoreload 8042 133198368895104 /home/adithya/Desktop/copy2/core/views.py changed, reloading.
+INFO 2025-09-10 22:43:25,381 autoreload 8069 130054614945920 Watching for file changes with StatReloader
+INFO 2025-09-10 22:43:44,746 autoreload 8069 130054614945920 /home/adithya/Desktop/copy2/core/views.py changed, reloading.
+INFO 2025-09-10 22:43:45,885 autoreload 8098 139066359378048 Watching for file changes with StatReloader
+INFO 2025-09-10 22:49:25,931 autoreload 8261 123443606175872 Watching for file changes with StatReloader
+INFO 2025-09-10 22:49:30,380 basehttp 8261 123443441825472 "GET / HTTP/1.1" 302 0
+INFO 2025-09-10 22:49:30,443 basehttp 8261 123443441825472 "GET /dashboard/ HTTP/1.1" 200 42514
+INFO 2025-09-10 22:49:36,195 basehttp 8261 123443441825472 "GET /records/create/rto/ HTTP/1.1" 200 13347
+INFO 2025-09-10 22:50:03,628 basehttp 8261 123443441825472 "POST /ajax/create-record/ HTTP/1.1" 200 85
+INFO 2025-09-10 22:50:05,172 basehttp 8261 123443441825472 "GET /records/4eb0cfb2-fbd8-410f-9dd9-e20033753bce/payment/qr_download/ HTTP/1.1" 200 9906
+INFO 2025-09-10 22:50:41,733 basehttp 8261 123443441825472 "POST /ajax/verify-payment/ HTTP/1.1" 200 86
+INFO 2025-09-10 22:50:41,808 basehttp 8261 123443441825472 "GET /qr-success/4eb0cfb2-fbd8-410f-9dd9-e20033753bce/ HTTP/1.1" 200 11623
+INFO 2025-09-10 22:50:41,901 basehttp 8261 123443441825472 "GET /media/qr_codes/qr_4eb0cfb2-fbd8-410f-9dd9-e20033753bce.png HTTP/1.1" 200 976

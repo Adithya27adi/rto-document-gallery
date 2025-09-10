@@ -122,28 +122,29 @@ def ajax_create_record(request):
     return JsonResponse({'payment_url': payment_url})
 
 
+# core/views.py (relevant portion)
 @login_required
 def create_record_view(request, record_type):
-    if record_type == 'school':
-        form_class = SchoolRecordForm
-    else:
-        form_class = RTORecordForm
-
+    # Use the same form for all record types
+    form_class = RTORecordForm
+    
     if request.method == 'POST':
         form = form_class(request.POST, request.FILES)
         if form.is_valid():
             record = form.save(commit=False)
             record.owner = request.user
-            record.record_type = record_type
+            record.record_type = record_type  # 'rc', 'school', or 'other'
             record.save()
-            messages.success(request, "Record created successfully. Proceed to payment.")
+            messages.success(request, f"{record.get_record_type_display()} created successfully. Proceed to payment.")
             return redirect('core:payment', record_id=record.id, order_type='qr_download')
         else:
             messages.error(request, "Please correct the errors below.")
     else:
         form = form_class()
 
+    # Pass record_type to the template for header/label rendering
     return render(request, 'core/create_record.html', {'form': form, 'record_type': record_type})
+
 
 
 @login_required

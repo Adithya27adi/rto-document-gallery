@@ -5,84 +5,120 @@
 {% block content %}
 <div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <!-- Success Message -->
-            <div class="text-center mb-4">
-                <div class="mb-3">
-                    <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+        <div class="col-lg-7 col-md-9">
+
+            <div id="processingSection" class="card border-0 shadow-lg p-5 text-center">
+                <div class="spinner-border text-primary mb-4" style="width: 3rem; height: 3rem;"></div>
+                <h3 class="fw-bold mb-3 text-primary">Finalizing Your Secure QR Code</h3>
+                <p id="processingMessage" class="text-muted fs-5">Initiating secure connection...</p>
+
+                <div class="progress mt-4" style="height: 8px;">
+                    <div id="progressFill" class="progress-bar bg-primary progress-bar-striped progress-bar-animated"
+                        style="width: 0%"></div>
                 </div>
-                <h2 class="fw-bold text-success">Payment Successful!</h2>
-                <p class="text-muted">Your QR code has been generated successfully.</p>
+
+                <ul id="statusList" class="list-group list-group-flush text-start mt-4">
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Initiating secure connection...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Verifying payment details...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Encrypting your data...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Uploading documents to Cloudinary...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Generating the QR code image...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Attaching QR code to your record...</li>
+                    <li class="list-group-item d-flex align-items-center"><i class="fas fa-dot-circle me-2 text-muted"></i> Finalizing all processes...</li>
+                </ul>
             </div>
 
-            <!-- QR Code Display -->
-            <div class="card border-0 shadow-lg">
-                <div class="card-body text-center p-5">
-                    <h4 class="fw-bold mb-4">📱 Your QR Code</h4>
-                    
-                    {% if record.qr_code_image %}
-                        <div class="mb-4">
-                            <img src="{{ record.qr_code_image.url }}" 
-                                 alt="QR Code for {{ record.name }}" 
-                                 class="img-fluid border rounded" 
-                                 style="max-width: 300px;">
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>How to use:</strong> Scan this QR code to view all your uploaded documents
-                        </div>
-                        
-                        <!-- Action Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-                            <a href="{{ record.qr_code_image.url }}" 
-                               class="btn btn-primary btn-lg" 
-                               download="qr_code_{{ record.name|slugify }}.png">
-                                <i class="fas fa-download me-2"></i>Download QR Code
-                            </a>
-                            {% if record.gallery_html_url %}
-                                <a href="{{ record.gallery_html_url }}" 
-                                   class="btn btn-success btn-lg" 
-                                   target="_blank">
-                                    <i class="fas fa-external-link-alt me-2"></i>View Documents
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div class="alert alert-warning">
-                            QR code is being generated. Please refresh the page in a moment.
-                        </div>
+            <div id="successSection" class="card border-0 shadow-lg p-5 text-center d-none animate__animated animate__fadeIn">
+                <div class="mb-3">
+                    <i class="fas fa-check-circle text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h2 class="fw-bold text-success"> QR Code Ready</h2>
+                <p class="text-muted">Your secure QR code is now generated and ready for use.</p>
+
+                {% if record.qr_code_image %}
+                <div class="my-4 animate__animated animate__zoomIn">
+                    <img src="{{ record.qr_code_image.url }}"
+                        alt="QR Code for {{ record.name }}"
+                        class="img-fluid border rounded shadow-lg"
+                        style="max-width: 250px;">
+                </div>
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Scan this QR code anytime to securely access your documents.
+                </div>
+
+                <div class="d-flex flex-wrap justify-content-center gap-3 mt-3">
+                    <a href="{{ record.qr_code_image.url }}" class="btn btn-primary btn-lg"
+                        download="qr_code_{{ record.name|slugify }}.png">
+                        <i class="fas fa-download me-2"></i>Download QR
+                    </a>
+                    {% if record.gallery_html_url %}
+                    <a href="{{ record.gallery_html_url }}" class="btn btn-success btn-lg" target="_blank">
+                        <i class="fas fa-external-link-alt me-2"></i>View Documents
+                    </a>
                     {% endif %}
                 </div>
+                {% else %}
+                <div class="alert alert-warning">QR code is still generating. Please refresh shortly.</div>
+                {% endif %}
             </div>
 
-            <!-- Record Details -->
-            <div class="card border-0 shadow-sm mt-4">
-                <div class="card-body">
-                    <h5 class="fw-bold mb-3">📋 Record Details</h5>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> {{ record.name }}</p>
-                            <p><strong>Contact:</strong> {{ record.contact_no }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Type:</strong> {{ record.get_record_type_display }}</p>
-                            <p><strong>Documents:</strong> {{ record.cloudinary_urls|length }} file{{ record.cloudinary_urls|length|pluralize }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation -->
-            <div class="text-center mt-4">
-                <a href="{% url 'core:dashboard' %}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
-                </a>
-                <a href="{% url 'core:create_record' 'rto' %}" class="btn btn-outline-primary">
-                    <i class="fas fa-plus me-2"></i>Create Another Record
-                </a>
-            </div>
         </div>
     </div>
 </div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script>
+    const messages = [
+        "Initiating secure connection...",
+        "Verifying payment details...",
+        "Encrypting your data...",
+        "Uploading documents to Cloudinary...",
+        "Generating the QR code image...",
+        "Attaching QR code to your record...",
+        "Finalizing all processes..."
+    ];
+
+    let step = 0;
+    const msgEl = document.getElementById("processingMessage");
+    const progressFill = document.getElementById("progressFill");
+    const statusList = document.getElementById("statusList").children;
+    const processingSection = document.getElementById("processingSection");
+    const successSection = document.getElementById("successSection");
+
+    function showNextMessage() {
+        if (step < messages.length) {
+            msgEl.textContent = messages[step];
+            progressFill.style.width = ((step + 1) / messages.length) * 100 + "%";
+
+            // Update icon and text for the current step
+            if (step > 0) {
+                statusList[step - 1].children[0].className = "fas fa-check-circle me-2 text-success";
+            }
+            statusList[step].children[0].className = "fas fa-sync-alt fa-spin me-2 text-primary";
+
+            step++;
+        } else {
+            // Once all steps are complete, mark the last one as done
+            statusList[messages.length - 1].children[0].className = "fas fa-check-circle me-2 text-success";
+            
+            // Wait a moment before showing the success section
+            setTimeout(() => {
+                processingSection.classList.add("d-none");
+                successSection.classList.remove("d-none");
+            }, 1000); // 1-second delay for a smoother transition
+        }
+    }
+
+    // Set a longer interval for a 30-second total wait time
+    const totalTimeInSeconds = 30;
+    const intervalTime = (totalTimeInSeconds / messages.length) * 1000;
+    
+    // Start the process
+    showNextMessage();
+    setInterval(showNextMessage, intervalTime);
+</script>
 {% endblock %}
